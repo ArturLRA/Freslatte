@@ -1,0 +1,34 @@
+.logo img{
+  height: 100px;
+  margin-left: -250px;
+}
+
+.login img{
+  height: 100px;
+}
+
+.menu{
+  padding: 0 20px !important;
+  border-left: 1px solid #666 !important;
+  text-transform: uppercase;
+}
+
+.menu:first-child{
+  border-left: none !important;
+}
+
+.menu a{
+  text-decoration: none;
+  color: #666;
+  font-size: 20px !important;
+}
+
+.menu a:hover{
+  opacity: .7;
+}
+
+.carrosel img {
+ height: 800px;
+ width: 100%;
+}
+
