@@ -4,7 +4,7 @@ import Home from './pages/Home'
 import BanhoTosa from './pages/BanhoTosa';
 import HotelResort from './pages/HotelResort';
 import LoginCadastro from './pages/CadastroLogin';
-import NavBarMenu from '../src/components/NavBarMenu';
+import NavBarMenu from './components/NavBarMenu';
 
 
 function App() {

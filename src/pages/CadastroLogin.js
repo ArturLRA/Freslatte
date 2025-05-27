@@ -1,11 +1,12 @@
-function LoginCadastro(){
+function CadastroLogin(){
     return(
         <div>
-            <label htmlFor="emailcadastro"></label>
-            <input htmltype="email" htmlid="emailcadastro" htmlname="email" />
+
+            <label htmlFor="emailcadastro">Email:</label>
+            <input type="email" id="emailcadastro" name="email" />
             
         </div>
     );
 };
 
-export default LoginCadastro
+export default CadastroLogin
