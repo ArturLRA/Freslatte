@@ -20,8 +20,7 @@ function NavBarMenu() {
 
           <Nav className="me-auto">
             <Nav.Link className='menu'><Link to='/'>Home</Link></Nav.Link>
-            <Nav.Link className='menu'><Link to='/BanhoTosa'>Banho e tosa</Link></Nav.Link>
-            <Nav.Link className='menu'><Link to='/HotelResort'>Hotel resort</Link></Nav.Link>
+            <Nav.Link className='menu'><Link to='/Shop'>Loja</Link></Nav.Link>
           </Nav>
 
           <Navbar.Brand className='logo'>

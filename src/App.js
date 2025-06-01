@@ -1,9 +1,8 @@
 import './App.css';
 import { BrowserRouter as Router, Routes, Route} from 'react-router-dom'
 import Home from './pages/Home'
-import BanhoTosa from './pages/BanhoTosa';
-import HotelResort from './pages/HotelResort';
-import LoginCadastro from './pages/CadastroLogin';
+import Shop from './pages/Shop';
+import HomeFooter from './components/Footer';
 import NavBarMenu from './components/NavBarMenu';
 
 
@@ -15,17 +14,11 @@ function App() {
 
       <Routes>
         <Route path='/' element={<Home /> } />
-        <Route path='/banhoTosa'  element={<BanhoTosa /> }/>
-        <Route path='/hotelResort' element={<HotelResort /> } />
-        <Route path='/loginECadastro' element={<LoginCadastro /> } />
+        <Route path='/Shop'  element={<Shop /> }/>
       </Routes>
 
+      <HomeFooter />
     </Router>
-
-
-     
- 
-    
   );
 }
 
