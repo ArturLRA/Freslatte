@@ -13,8 +13,9 @@ function HomeText() {
             </Row>
 
             <Row>
-                <Col m={8}></Col>
                 <Col m={4}><img src={bannerImage1} alt="Imagem 2" /></Col>
+                <Col m={8}></Col>
+                
             </Row>
 
         </Container>

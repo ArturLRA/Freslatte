@@ -1,5 +1,4 @@
 import React from 'react';
-import './LoginForm.css';
 import logo from './logo-freslatte.png';
 
 export default function LoginForm() {
