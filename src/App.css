@@ -71,230 +71,111 @@
   margin: 10px 0;
 }
 
-/*CSS TELA CADASTRO () - Cadastro.js */
+/* LoginPage() - LoginPage.js */
 
-body {
-  margin: 0;
-  padding: 0;
-  font-family: 'Segoe UI', sans-serif;
-  background-color: #f0eded;
-}
-.container {
-  background-color: #f4efef;
-  border-radius: 20px;
-  padding: 40px 60px;
+.loginContainer {
   display: flex;
-  gap: 40px;
-  align-items: center;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  max-width: 900px;
-  margin: 100px auto;
+  height: 100vh;
+  background-color: #f3eeee;
+  font-family: 'Segoe UI', sans-serif;
 }
 
-/* LOGO CADASTRO () - Cadastro.js */
-
-.logo-text {
-  max-width: 200px;
-  text-align: left;
-}
-
-.logo-text img {
-  width: 100px;
-  margin-bottom: 70px;
-  margin-left: 40px;
-
-}
-
-.logo-text h2 {
-  margin: 0;
-  font-size: 22px;
-  font-weight: bold;
-}
-
-.logo-text p {
-  font-size: 20px;
-  font-weight: bold;
-  margin-top: 5px;
-  color: #4A4949;
-}
-
-.form-group {
+.loginLeft {
+  background-color: #8da299;
+  color: #222;
+  padding: 40px;
+  width: 35%;
+  border-top-left-radius: 2rem;
+  border-bottom-left-radius: 2rem;
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  flex: 1;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
 }
 
-input {
-  padding: 12px;
-  border: none;
-  border-radius: 6px;
-  background-color: #a8bfb3;
-  color: #fff;
-  font-size: 14px;
-  outline: none;
+.loginLeft h2 {
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1.5;
+  margin-bottom: 30px;
 }
 
-input::placeholder {
-  color: #e0e0e0;
-}
-
-/* BOTÃO TELA CADASTRO () - Cadastro.js */
-
-.btn {
-  margin-top: 10px;
-  padding: 10px 25px;
-  background-color: #A8BFB5;
-  color: #000;
-  border: none;
-  border-radius: 20px;
+.loginLeft p {
   font-size: 16px;
+  margin-top: 20px;
+}
+
+.btnCadastrar {
+  background-color: #adc5b9;
+  border: none;
+  border-radius: 2rem;
+  padding: 10px 25px;
+  font-size: 16px;
+  margin-top: 10px;
   cursor: pointer;
-  align-self: flex-end;
 }
 
-.btn:hover {
-  background-color: #96afa2;
-}
-
-/* CSS TELA DE LOGIN () - Login.js */
-body {
-  margin: 0;
-  padding: 0;
-  font-family: 'Segoe UI', sans-serif;
-  background-color: #f0eded;
-}
-
-.container {
-  background-color: #f4efef;
-  border-radius: 20px;
+.loginRight {
+  position: relative;
+  flex: 1;
   padding: 40px 60px;
   display: flex;
-  gap: 40px;
-  align-items: center;
-  max-width: 900px;
-  margin: 100px auto;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  flex-direction: column;
+  justify-content: center;
 }
 
-/* LOGO TELA DE LOGIN () - Login.js */
-
-.logo-text {
-  max-width: 200px;
-  text-align: left;
+.loginLogo {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  max-height: 100px;
 }
 
-.logo-text img {
-  width: 80px;
-  margin-bottom: 10px;
-}
-
-.logo-text h2 {
-  margin: 0;
-  font-size: 22px;
-  font-weight: bold;
-}
-
-.logo-text p {
-  font-size: 20px;
-  font-weight: bold;
-  margin-top: 5px;
-  color: #333;
-}
-
-.form-group {
+.loginForm {
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  flex: 1;
+  gap: 20px;
 }
 
-/* INPUT DA TELA DE LOGIN () - Login.js */
-
-input[type="email"],
-input[type="password"],
-input[type="text"] {
-  padding: 12px;
+.loginInput,
+.input {
+  padding: 15px;
   border: none;
-  border-radius: 6px;
-  background-color: #a8bfb3;
-  color: #fff;
-  font-size: 14px;
+  background-color: #adc5b9;
+  border-radius: 10px;
+  font-size: 16px;
   outline: none;
 }
 
-input::placeholder {
-  color: #e0e0e0;
-}
-
-.form-options {
+.loginOptions {
   display: flex;
   justify-content: space-between;
   align-items: center;
   font-size: 14px;
 }
 
-.checkbox-container {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  color: #333;
+.loginOptions label input {
+  margin-right: 6px;
 }
 
-.forgot-link {
-  text-decoration: none;
-  color: #000;
+.loginBtnEsqueceu {
+  cursor: pointer;
 }
 
-.forgot-link:hover {
-  text-decoration: underline;
-}
-
-/* BOTÃO TELA DE LOGIN () - Login.js */
-
-.buttons {
+.LoginbtnWrapper {
   display: flex;
   justify-content: flex-end;
-  gap: 10px;
-  margin-top: 10px;
 }
 
-.btn {
-  padding: 10px 25px;
+.btnAvancar {
+  background-color: #adc5b9;
   border: none;
-  border-radius: 20px;
+  border-radius: 2rem;
+  padding: 10px 25px;
   font-size: 16px;
   cursor: pointer;
 }
 
-.primary {
-  background-color: #a8bfb3;
-  color: #000;
-}
+/* NavBarShop() - NavBarShop.js */
 
-.secondary {
-  background-color: #c8d1cb;
-  color: #000;
-}
-
-.btn:hover {
-  opacity: 0.9;
-}
-
-/* IMAGEN  () - NavBarShop.js */
-
-.ImgFltro {
-  margin-top: 5px;
-  width: 20px;
-  height: 30px;
-}
-
-.ImgCoracao {
-  width: 30px;
-  height: 30px;
-}
-
-.ImgCarrinho {
-  width: 30px;
-  height: 30px;
-}

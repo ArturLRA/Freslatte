@@ -1,45 +1,64 @@
 require('dotenv').config();
 const express = require('express');
-const { Pool } = require('pg');
 const cors = require('cors');
+const sql = require('./db'); // importa o sql com neon
 
 const app = express();
 const port = process.env.PORT || 3001;
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-});
+app.use(cors());
+app.use(express.json());
 
-app.use(cors())
-
+// Rota para produtos
 app.get('/produtos', async (req, res) => {
   try {
-    const resultado = await pool.query('SELECT * FROM produtos');
-    res.json(resultado.rows);
+    const resultado = await sql`SELECT * FROM produtos`;
+    res.json(resultado);
   } catch (err) {
     console.error(err);
     res.status(500).json({ erro: 'Erro ao buscar produtos' });
   }
-
 });
 
+// Rota para clientes
 app.get('/clientes', async (req, res) => {
   try {
-    const resultado = await pool.query('SELECT * FROM clientes');
-    res.json(resultado.rows);
+    const resultado = await sql`SELECT * FROM clientes`;
+    res.json(resultado);
   } catch (err) {
     console.error(err);
     res.status(500).json({ erro: 'Erro ao buscar clientes' });
   }
 });
 
-pool.connect()
-  .then(() => {
-    console.log('🟢 Conectado ao banco de dados');
-    app.listen(port, () => {
-      console.log(`🚀 Servidor rodando na porta ${port}`);
-    });
-  })
-  .catch((err) => {
-    console.error('❌ Erro ao conectar ao banco de dados:', err);
-  });
+// Teste simples de conexão (opcional)
+app.get('/versao', async (req, res) => {
+  try {
+    const result = await sql`SELECT version()`;
+    const { version } = result[0];
+    res.send(`Versão do banco: ${version}`);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Erro ao obter versão');
+  }
+});
+
+app.listen(port, () => {
+  console.log(`🚀 Servidor rodando na porta ${port}`);
+});
+
+app.post('/cadastrar', async (req, res) => {
+  const { email, senha } = req.body;
+
+  if (!email || !senha) {
+    return res.status(400).json({ erro: 'Email e senha são obrigatórios' });
+  }
+
+  try {
+    await sql`INSERT INTO usuarios (email, senha) VALUES (${email}, ${senha})`;
+    res.status(201).json({ mensagem: 'Usuário cadastrado com sucesso' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ erro: 'Erro ao cadastrar usuário' });
+  }
+});

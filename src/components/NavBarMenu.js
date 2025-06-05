@@ -24,8 +24,8 @@ function NavBarMenu() {
           </Nav>
 
           <Navbar.Brand className='logo'>
-            <Link to='/CadastroLogin'>
-              <img src={usuario} alt='botão login/cadastro'/>
+            <Link to='/LoginPage'>
+              <img src={usuario} alt='botão login'/>
             </Link>
           </Navbar.Brand>
 
@@ -33,9 +33,5 @@ function NavBarMenu() {
       </Navbar>
   );
 };
-
-function login() {
-
-}
 
 export default NavBarMenu
