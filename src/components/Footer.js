@@ -28,7 +28,7 @@ export default function HomeFooter() {
         </div>
         <div className="direitoFooter">
             <p>
-                $copy;{new Date().getFullYear()} Freslatte. Todos os direitos reservados.
+                &copy; {new Date().getFullYear()} Freslatte. Todos os direitos reservados.
             </p>
         </div>
         </div>
