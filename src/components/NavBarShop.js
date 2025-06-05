@@ -14,12 +14,26 @@ function NavBarShop({
   busca, setBusca,
   categoria, setCategoria,
   precoMin, setPrecoMin,
-  precoMax, setPrecoMax
+  precoMax, setPrecoMax,
+  setProdutosFiltrados
 }) {
   const [showModal, setShowModal] = useState(false);
 
   const handleClose = () => setShowModal(false);
   const handleShow = () => setShowModal(true);
+
+  const handleFiltrarFavoritos = async () => {
+    const email = localStorage.getItem('usuarioEmail');
+    if (!email) return alert('Usuário não logado');
+
+    try {
+      const response = await fetch(`http://localhost:3001/favoritos/${email}`);
+      const data = await response.json();
+      setProdutosFiltrados(data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   return (
     <>
@@ -40,10 +54,14 @@ function NavBarShop({
               </Form>
 
               <Nav.Link onClick={handleShow}>
-                filtro <img src={Filtro} className='ImgFltro' />
+                filtro <img src={Filtro} className='ImgFltro' alt="Filtro" />
               </Nav.Link>
-              <Nav.Link href="#"><img src={Coracao} className='ImgCoracao' /></Nav.Link>
-              <Nav.Link href="#"><img src={Carrimho} className='ImgCarrinho' /></Nav.Link>
+              <Nav.Link href="#" onClick={handleFiltrarFavoritos}>
+                <img src={Coracao} className='ImgCoracao' alt="Favoritos" />
+              </Nav.Link>
+              <Nav.Link href="#">
+                <img src={Carrimho} className='ImgCarrinho' alt="Carrinho" />
+              </Nav.Link>
             </Nav>
           </Navbar.Collapse>
         </Container>
@@ -85,13 +103,15 @@ function NavBarShop({
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => {
-            
-            setCategoria('');
-            setPrecoMin('');
-            setPrecoMax('');
-            handleClose();
-          }}>
+          <Button
+            variant="secondary"
+            onClick={() => {
+              setCategoria('');
+              setPrecoMin('');
+              setPrecoMax('');
+              handleClose();
+            }}
+          >
             Limpar
           </Button>
           <Button variant="primary" onClick={handleClose}>

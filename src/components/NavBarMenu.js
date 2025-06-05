@@ -1,37 +1,41 @@
 import React from 'react';
 import Container from 'react-bootstrap/Container';
-import Nav from 'react-bootstrap/Nav';
 import Navbar from 'react-bootstrap/Navbar';
+import { Link } from 'react-router-dom';
 import logo from '../images/logoNavBar.png';
-import {Link} from 'react-router-dom';
-import usuario from '../images/usuario.png';
-
+import usuario from '../images/usuario.webp';
+import '../App.css';
 
 function NavBarMenu() {
   return (
-<Navbar bg="light" data-bs-theme="light">
-        <Container>
+    <Navbar bg="light" expand="lg" className="navBarCustom">
+      <Container className="d-flex justify-content-between align-items-center">
 
-          <Navbar.Brand className='logo'>
-          <Link to="/" className='logo'>
-            <img src={logo} alt='Logo Fresslatte'/>
+        {/* Logo */}
+        <div className="logo-link">
+          <Link to="/">
+            <img src={logo} alt="Logo Fresslatte" className="logo-img" />
           </Link>
-          </Navbar.Brand>
+        </div>
 
-          <Nav className="me-auto">
-            <Nav.Link className='menu'><Link to='/'>Home</Link></Nav.Link>
-            <Nav.Link className='menu'><Link to='/Shop'>Loja</Link></Nav.Link>
-          </Nav>
+        {/* Menu central com estilo de texto */}
+        <div className="menu-text-links">
+          <Link to="/" className="text-link">HOME</Link>
+          <span className="separator">|</span>
+          <Link to="/Shop" className="text-link">LOJA</Link>
+          <span className="separator">|</span>
+        </div>
 
-          <Navbar.Brand className='logo'>
-            <Link to='/LoginPage'>
-              <img src={usuario} alt='botão login'/>
-            </Link>
-          </Navbar.Brand>
+        {/* Ícone do usuário */}
+        <div className="usuario-link">
+          <Link to="/LoginPage">
+            <img src={usuario} alt="Botão login" className="usuario-img" />
+          </Link>
+        </div>
 
-        </Container>
-      </Navbar>
+      </Container>
+    </Navbar>
   );
-};
+}
 
-export default NavBarMenu
+export default NavBarMenu;
