@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
 import Nav from 'react-bootstrap/Nav';
@@ -10,16 +10,59 @@ import Filtro from '../images/filtro.png';
 import Coracao from '../images/favoritar.png';
 import Carrimho from '../images/carrinho.png';
 
+import CartModal from '../components/CartModal';
+/*{import FavoritosModal from '../components/FavoritosModal';}*/
+
 function NavBarShop({
   busca, setBusca,
   categoria, setCategoria,
   precoMin, setPrecoMin,
-  precoMax, setPrecoMax
+  precoMax, setPrecoMax,
+  setProdutosFiltrados,
+  produtos
 }) {
-  const [showModal, setShowModal] = useState(false);
+  const [showModalFiltro, setShowModalFiltro] = useState(false);
+  const [showCartModal, setShowCartModal] = useState(false);
+  const [showFavoritosModal, setShowFavoritosModal] = useState(false);
 
-  const handleClose = () => setShowModal(false);
-  const handleShow = () => setShowModal(true);
+  const [favoritos, setFavoritos] = useState([]);
+  const [carrinho, setCarrinho] = useState([]);
+
+  const handleCloseFiltro = () => setShowModalFiltro(false);
+  const handleShowFiltro = () => setShowModalFiltro(true);
+
+  const handleShowCart = () => setShowCartModal(true);
+  const handleCloseCart = () => setShowCartModal(false);
+
+  const handleShowFavoritos = () => setShowFavoritosModal(true);
+  const handleCloseFavoritos = () => setShowFavoritosModal(false);
+
+  useEffect(() => {
+    const email = localStorage.getItem('usuarioEmail');
+    if (email) {
+      const favs = JSON.parse(localStorage.getItem(`favoritos_${email}`)) || [];
+      setFavoritos(favs);
+    }
+
+    const cart = JSON.parse(localStorage.getItem('carrinho')) || [];
+    setCarrinho(cart);
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const email = localStorage.getItem('usuarioEmail');
+      if (email) {
+        const favs = JSON.parse(localStorage.getItem(`favoritos_${email}`)) || [];
+        setFavoritos(favs);
+      }
+
+      const cart = JSON.parse(localStorage.getItem('carrinho')) || [];
+      setCarrinho(cart);
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const totalItensCarrinho = carrinho.reduce((acc, item) => acc + item.quantidade, 0);
 
   return (
     <>
@@ -39,18 +82,47 @@ function NavBarShop({
                 />
               </Form>
 
-              <Nav.Link onClick={handleShow}>
-                filtro <img src={Filtro} className='ImgFltro' />
+              <Nav.Link onClick={handleShowFiltro}>
+                filtro <img src={Filtro} className='ImgFltro' alt="Filtro" />
               </Nav.Link>
-              <Nav.Link href="#"><img src={Coracao} className='ImgCoracao' /></Nav.Link>
-              <Nav.Link href="#"><img src={Carrimho} className='ImgCarrinho' /></Nav.Link>
+
+              {/* <Nav.Link href="#" onClick={handleShowFavoritos} style={{ position: 'relative' }}>
+                <img src={Coracao} className='ImgCoracao' alt="Favoritos" />
+                {favoritos.length > 0 && (
+                  <span style={{
+                    position: 'absolute',
+                    top: '0',
+                    right: '0',
+                    backgroundColor: '#3C594E',
+                    color: 'white',
+                    borderRadius: '50%',
+                    padding: '2px 6px',
+                    fontSize: '12px'
+                  }}>{favoritos.length}</span> */}
+                {/* )}<|cursor|> */}
+              {/* </Nav.Link> */}
+
+              <Nav.Link href="#" onClick={handleShowCart} style={{ position: 'relative' }}>
+                <img src={Carrimho} className='ImgCarrinho' alt="Carrinho" />
+                {totalItensCarrinho > 0 && (
+                  <span style={{
+                    position: 'absolute',
+                    top: '0',
+                    right: '0',
+                    backgroundColor: '#3C594E',
+                    color: 'white',
+                    borderRadius: '50%',
+                    padding: '2px 6px',
+                    fontSize: '12px'
+                  }}>{totalItensCarrinho}</span>
+                )}
+              </Nav.Link>
             </Nav>
           </Navbar.Collapse>
         </Container>
       </Navbar>
 
-      {/* Modal de Filtros */}
-      <Modal show={showModal} onHide={handleClose}>
+      <Modal show={showModalFiltro} onHide={handleCloseFiltro}>
         <Modal.Header closeButton>
           <Modal.Title>Filtrar Produtos</Modal.Title>
         </Modal.Header>
@@ -85,20 +157,25 @@ function NavBarShop({
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => {
-            
-            setCategoria('');
-            setPrecoMin('');
-            setPrecoMax('');
-            handleClose();
-          }}>
+          <Button
+            variant="secondary"
+            onClick={() => {
+              setCategoria('');
+              setPrecoMin('');
+              setPrecoMax('');
+              handleCloseFiltro();
+            }}
+          >
             Limpar
           </Button>
-          <Button variant="primary" onClick={handleClose}>
+          <Button variant="primary" onClick={handleCloseFiltro}>
             Aplicar
           </Button>
         </Modal.Footer>
       </Modal>
+
+      <CartModal show={showCartModal} onHide={handleCloseCart} />
+      {/* <FavoritosModal show={showFavoritosModal} onHide={handleCloseFavoritos} /> */}
     </>
   );
 }

@@ -5,8 +5,6 @@ import HomeText from "../components/TextGrid";
 function Home(){
     return(
     <div className='carrosel'>
-  <Carrosel />
-
      <HomeText />
    </div>
 
