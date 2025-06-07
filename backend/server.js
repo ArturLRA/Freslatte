@@ -58,23 +58,3 @@ app.post('/cadastrar', async (req, res) => {
     res.status(500).json({ erro: 'Erro ao cadastrar usuário' });
   }
 });
-
-// Login de usuário
-app.post('/login', async (req, res) => {
-  const { email, senha } = req.body;
-  try {
-    const result = await sql`SELECT * FROM usuarios WHERE email = ${email} AND senha = ${senha}`;
-    if (result.length > 0) {
-      res.status(200).json({ mensagem: 'Login realizado com sucesso' });
-    } else {
-      res.status(401).json({ erro: 'Email ou senha incorretos' });
-    }
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ erro: 'Erro ao fazer login' });
-  }
-});
-
-app.listen(port, () => {
-  console.log(`🚀 Servidor rodando na porta ${port}`);
-});
