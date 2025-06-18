@@ -8,10 +8,9 @@ import Button from 'react-bootstrap/Button';
 
 import Filtro from '../images/filtro.png';
 import Coracao from '../images/favoritar.png';
-import Carrimho from '../images/carrinho.png';
+import Carrinho from '../images/carrinho.png';
 
 import CartModal from '../components/CartModal';
-/*{import FavoritosModal from '../components/FavoritosModal';}*/
 
 function NavBarShop({
   busca, setBusca,
@@ -19,37 +18,24 @@ function NavBarShop({
   precoMin, setPrecoMin,
   precoMax, setPrecoMax,
   setProdutosFiltrados,
-  produtos
+  produtos,
+  mostrarFavoritos,
+  setMostrarFavoritos
 }) {
   const [showModalFiltro, setShowModalFiltro] = useState(false);
   const [showCartModal, setShowCartModal] = useState(false);
-  const [showFavoritosModal, setShowFavoritosModal] = useState(false);
 
   const [favoritos, setFavoritos] = useState([]);
   const [carrinho, setCarrinho] = useState([]);
+  const [filtrarFavoritos, setFiltrarFavoritos] = useState(false);
 
   const handleCloseFiltro = () => setShowModalFiltro(false);
   const handleShowFiltro = () => setShowModalFiltro(true);
-
   const handleShowCart = () => setShowCartModal(true);
   const handleCloseCart = () => setShowCartModal(false);
 
-  const handleShowFavoritos = () => setShowFavoritosModal(true);
-  const handleCloseFavoritos = () => setShowFavoritosModal(false);
-
   useEffect(() => {
-    const email = localStorage.getItem('usuarioEmail');
-    if (email) {
-      const favs = JSON.parse(localStorage.getItem(`favoritos_${email}`)) || [];
-      setFavoritos(favs);
-    }
-
-    const cart = JSON.parse(localStorage.getItem('carrinho')) || [];
-    setCarrinho(cart);
-  }, []);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
+    const atualizarEstado = () => {
       const email = localStorage.getItem('usuarioEmail');
       if (email) {
         const favs = JSON.parse(localStorage.getItem(`favoritos_${email}`)) || [];
@@ -58,11 +44,43 @@ function NavBarShop({
 
       const cart = JSON.parse(localStorage.getItem('carrinho')) || [];
       setCarrinho(cart);
-    }, 1000);
-    return () => clearInterval(interval);
+    };
+
+    window.addEventListener('storage', atualizarEstado);
+    atualizarEstado();
+
+    return () => window.removeEventListener('storage', atualizarEstado);
   }, []);
 
+  useEffect(() => {
+    aplicarFiltros(); // atualiza a cada mudança nos filtros ou favoritos
+  }, [busca, categoria, precoMin, precoMax, filtrarFavoritos, favoritos]);
+
+  const aplicarFiltros = () => {
+    const produtosFiltrados = produtos.filter(produto => {
+      const condicoesBase =
+        (!categoria || produto.categoria === categoria) &&
+        (!precoMin || produto.preco >= Number(precoMin)) &&
+        (!precoMax || produto.preco <= Number(precoMax)) &&
+        (!busca || produto.nome.toLowerCase().includes(busca.toLowerCase()));
+
+      const condicaoFavorito = !filtrarFavoritos || favoritos.includes(produto.id);
+      return condicoesBase && condicaoFavorito;
+    });
+
+    setProdutosFiltrados(produtosFiltrados);
+  };
+
   const totalItensCarrinho = carrinho.reduce((acc, item) => acc + item.quantidade, 0);
+
+  const limparFiltros = () => {
+    setCategoria('');
+    setPrecoMin('');
+    setPrecoMax('');
+    setBusca('');
+    setFiltrarFavoritos(false);
+    setProdutosFiltrados(produtos);
+  };
 
   return (
     <>
@@ -76,34 +94,49 @@ function NavBarShop({
                   type="search"
                   placeholder="Buscar"
                   className="me-2"
-                  aria-label="Search"
+                  aria-label="Buscar produtos"
                   value={busca}
                   onChange={(e) => setBusca(e.target.value)}
                 />
               </Form>
 
-              <Nav.Link onClick={handleShowFiltro}>
-                filtro <img src={Filtro} className='ImgFltro' alt="Filtro" />
+              <Nav.Link as="span" onClick={handleShowFiltro}>
+                <span style={{ marginRight: '5px' }}>Filtro</span>
+                <img src={Filtro} className='ImgFltro' alt="Ícone de filtro" />
               </Nav.Link>
+              
+              <Nav.Link
+                as="span"
+                onClick={() => setMostrarFavoritos(prev => !prev)}  // Alterna o filtro
+                style={{
+    position: 'relative',
+    filter: mostrarFavoritos ? 'grayscale(0%)' : 'grayscale(100%)', // Visualmente indica o filtro
+    cursor: 'pointer'
+  }}
+  aria-label="Favoritos"
+>
+  <img src={Coracao} className='ImgCoracao' alt="Ícone de favoritos" />
+  {favoritos.length > 0 && (
+    <span style={{
+      position: 'absolute',
+      top: '0',
+      right: '0',
+      backgroundColor: '#3C594E',
+      color: 'white',
+      borderRadius: '50%',
+      padding: '2px 6px',
+      fontSize: '12px'
+    }}>{favoritos.length}</span>
+  )}
+</Nav.Link>
 
-              {/* <Nav.Link href="#" onClick={handleShowFavoritos} style={{ position: 'relative' }}>
-                <img src={Coracao} className='ImgCoracao' alt="Favoritos" />
-                {favoritos.length > 0 && (
-                  <span style={{
-                    position: 'absolute',
-                    top: '0',
-                    right: '0',
-                    backgroundColor: '#3C594E',
-                    color: 'white',
-                    borderRadius: '50%',
-                    padding: '2px 6px',
-                    fontSize: '12px'
-                  }}>{favoritos.length}</span> */}
-                {/* )}<|cursor|> */}
-              {/* </Nav.Link> */}
-
-              <Nav.Link href="#" onClick={handleShowCart} style={{ position: 'relative' }}>
-                <img src={Carrimho} className='ImgCarrinho' alt="Carrinho" />
+              <Nav.Link
+                as="span"
+                onClick={handleShowCart}
+                style={{ position: 'relative' }}
+                aria-label="Carrinho"
+              >
+                <img src={Carrinho} className='ImgCarrinho' alt="Ícone do carrinho" />
                 {totalItensCarrinho > 0 && (
                   <span style={{
                     position: 'absolute',
@@ -122,6 +155,7 @@ function NavBarShop({
         </Container>
       </Navbar>
 
+      {/* Modal de Filtros */}
       <Modal show={showModalFiltro} onHide={handleCloseFiltro}>
         <Modal.Header closeButton>
           <Modal.Title>Filtrar Produtos</Modal.Title>
@@ -144,6 +178,7 @@ function NavBarShop({
               type="number"
               value={precoMin}
               onChange={e => setPrecoMin(e.target.value)}
+              min="0"
             />
           </Form.Group>
 
@@ -153,29 +188,17 @@ function NavBarShop({
               type="number"
               value={precoMax}
               onChange={e => setPrecoMax(e.target.value)}
+              min="0"
             />
           </Form.Group>
         </Modal.Body>
         <Modal.Footer>
-          <Button
-            variant="secondary"
-            onClick={() => {
-              setCategoria('');
-              setPrecoMin('');
-              setPrecoMax('');
-              handleCloseFiltro();
-            }}
-          >
-            Limpar
-          </Button>
-          <Button variant="primary" onClick={handleCloseFiltro}>
-            Aplicar
-          </Button>
+          <Button variant="secondary" onClick={limparFiltros}>Limpar</Button>
+          <Button variant="primary" onClick={handleCloseFiltro}>Fechar</Button>
         </Modal.Footer>
       </Modal>
 
       <CartModal show={showCartModal} onHide={handleCloseCart} />
-      {/* <FavoritosModal show={showFavoritosModal} onHide={handleCloseFavoritos} /> */}
     </>
   );
 }

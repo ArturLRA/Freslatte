@@ -1,9 +1,6 @@
 import React, { useState } from 'react';
 import ProductModal from './ProductModal';
 import '../App.css';
-import React, { useState } from 'react';
-import ProductModal from './ProductModal';
-import '../App.css';
 
 function ProductCard({ produtos }) {
   const [produtoSelecionado, setProdutoSelecionado] = useState(null);

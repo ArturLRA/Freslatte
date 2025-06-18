@@ -29,11 +29,12 @@ function Shop() {
 useEffect(() => {
   let baseProdutos = produtos;
 
-  if (mostrarFavoritos) {
-    const email = localStorage.getItem('usuarioEmail');
-    const favoritos = JSON.parse(localStorage.getItem(`favoritos_${email}`)) || [];
-    baseProdutos = produtos.filter(p => favoritos.includes(Number(p.id)));
-  }
+if (mostrarFavoritos) {
+  const email = localStorage.getItem('usuarioEmail');
+  const favoritos = JSON.parse(localStorage.getItem(`favoritos_${email}`)) || [];
+  baseProdutos = produtos.filter(p => favoritos.includes(Number(p.id)));
+}
+
 
   let filtrados = baseProdutos.filter(prod =>
     prod.nome.toLowerCase().includes(busca.toLowerCase())

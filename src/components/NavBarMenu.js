@@ -8,33 +8,31 @@ import '../App.css';
 
 function NavBarMenu() {
   return (
-    <Navbar bg="light" expand="lg" className="navBarCustom">
-      <Container className="d-flex justify-content-between align-items-center">
+   <Navbar bg="light" expand="lg" className="navBarCustom">
+  <Container>
+    <Navbar.Brand as={Link} to="/">
+      <img src={logo} alt="Logo Fresslatte" className="logo-img" />
+    </Navbar.Brand>
 
-        {/* Logo */}
-        <div className="logo-link">
-          <Link to="/">
-            <img src={logo} alt="Logo Fresslatte" className="logo-img" />
-          </Link>
-        </div>
+    <Navbar.Toggle aria-controls="navbar-menu" />
+    <Navbar.Collapse id="navbar-menu" className="justify-content-between">
 
-        {/* Menu central com estilo de texto */}
-        <div className="menu-text-links">
-          <Link to="/" className="text-link">HOME</Link>
-          <span className="separator">|</span>
-          <Link to="/Shop" className="text-link">LOJA</Link>
-          <span className="separator">|</span>
-        </div>
+      <div className="menu-text-links">
+        <Link to="/" className="text-link">HOME</Link>
+        <span className="separator">|</span>
+        <Link to="/Shop" className="text-link">LOJA</Link>
+      </div>
 
-        {/* Ícone do usuário */}
-        <div className="usuario-link">
-          <Link to="/LoginPage">
-            <img src={usuario} alt="Botão login" className="usuario-img" />
-          </Link>
-        </div>
+      <div className="usuario-link">
+        <Link to="/LoginPage">
+          <img src={usuario} alt="Botão login" className="usuario-img" />
+        </Link>
+      </div>
 
-      </Container>
-    </Navbar>
+    </Navbar.Collapse>
+  </Container>
+</Navbar>
+
   );
 }
 
