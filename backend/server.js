@@ -70,6 +70,70 @@ app.post('/login', async (req, res) => {
   }
 });
 
+
+//Rotas de carrinho
+const carrinhoRouter = express.Router();
+
+// GET: Itens do carrinho
+carrinhoRouter.get('/:userId', async (req, res) => {
+  const { userId } = req.params;
+  try {
+    const itens = await sql`
+      SELECT p.*, c.quantidade
+      FROM carrinho c
+      JOIN produtos p ON p.id = c.produto_id
+      WHERE c.user_id = ${userId};
+    `;
+    res.json(itens);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ erro: 'Erro ao buscar carrinho' });
+  }
+});
+
+// POST: Adicionar ou atualizar item no carrinho
+carrinhoRouter.post('/', async (req, res) => {
+  const { userId, produtoId, quantidade } = req.body;
+  if (!userId || !produtoId || !quantidade) {
+    return res.status(400).json({ erro: 'Campos obrigatórios ausentes' });
+  }
+
+  try {
+    await sql`
+      INSERT INTO carrinho (user_id, produto_id, quantidade)
+      VALUES (${userId}, ${produtoId}, ${quantidade})
+      ON CONFLICT (user_id, produto_id)
+      DO UPDATE SET quantidade = carrinho.quantidade + EXCLUDED.quantidade;
+    `;
+    res.status(201).json({ mensagem: 'Produto adicionado/atualizado no carrinho' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ erro: 'Erro ao adicionar/atualizar produto' });
+  }
+});
+
+// DELETE: Remover item
+carrinhoRouter.delete('/', async (req, res) => {
+  const { userId, produtoId } = req.body;
+  if (!userId || !produtoId) {
+    return res.status(400).json({ erro: 'userId e produtoId são obrigatórios' });
+  }
+
+  try {
+    await sql`
+      DELETE FROM carrinho
+      WHERE user_id = ${userId} AND produto_id = ${produtoId};
+    `;
+    res.json({ mensagem: 'Item removido' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ erro: 'Erro ao remover item' });
+  }
+});
+
+app.use('/carrinho', carrinhoRouter);
+
+
 // Rotas de favoritos
 const router = express.Router();
 

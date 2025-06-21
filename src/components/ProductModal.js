@@ -5,48 +5,80 @@ import '../App.css';
 function ProductModal({ show, onHide, produto }) {
   const [favoritos, setFavoritos] = useState([]);
   const [carrinho, setCarrinho] = useState([]);
+  const email = localStorage.getItem('usuarioEmail');
 
-  // Carrega favoritos e carrinho do localStorage quando o modal abrir
   useEffect(() => {
-    const favs = JSON.parse(localStorage.getItem('favoritos')) || [];
-    const cart = JSON.parse(localStorage.getItem('carrinho')) || [];
-    setFavoritos(favs);
-    setCarrinho(cart);
-  }, [show]);
-
-  const handleFavoritar = () => {
     if (!produto) return;
 
-    let novosFavoritos = [...favoritos];
-    const index = novosFavoritos.indexOf(produto.id);
+    const carregarFavoritos = async () => {
+      try {
+        const res = await fetch(`http://localhost:3001/favoritos/${email}`);
+        const data = await res.json();
+        const ids = data.map(p => p.id);
+        setFavoritos(ids);
+      } catch (err) {
+        console.error('Erro ao carregar favoritos:', err);
+      }
+    };
 
-    if (index === -1) {
-      novosFavoritos.push(produto.id);
-      alert('Produto adicionado aos favoritos!');
-    } else {
-      novosFavoritos.splice(index, 1);
-      alert('Produto removido dos favoritos!');
+    const carregarCarrinho = async () => {
+      try {
+        const res = await fetch(`http://localhost:3001/carrinho/${email}`);
+        const data = await res.json();
+        setCarrinho(data);
+      } catch (err) {
+        console.error('Erro ao carregar carrinho:', err);
+      }
+    };
+
+    carregarFavoritos();
+    carregarCarrinho();
+  }, [show, produto, email]);
+
+  const handleAdicionarCarrinho = async () => {
+    if (!email || !produto) return;
+
+    try {
+      await fetch('http://localhost:3001/carrinho', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId: email, produtoId: produto.id, quantidade: 1 })
+      });
+
+      const atualizado = await fetch(`http://localhost:3001/carrinho/${email}`);
+      const novoCarrinho = await atualizado.json();
+      setCarrinho(novoCarrinho);
+
+      alert('Produto adicionado ao carrinho!');
+    } catch (error) {
+      console.error('Erro ao adicionar ao carrinho:', error);
     }
-
-    setFavoritos(novosFavoritos);
-    localStorage.setItem('favoritos', JSON.stringify(novosFavoritos));
   };
 
-  const handleAdicionarCarrinho = () => {
-    if (!produto) return;
+  const handleFavoritar = async () => {
+    if (!email || !produto) return;
 
-    const index = carrinho.findIndex(item => item.produto.id === produto.id);
-    let novoCarrinho = [...carrinho];
-
-    if (index === -1) {
-      novoCarrinho.push({ produto, quantidade: 1 });
-    } else {
-      novoCarrinho[index].quantidade += 1;
+    try {
+      if (favoritos.includes(produto.id)) {
+        await fetch('http://localhost:3001/favoritos', {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId: email, produtoId: produto.id })
+        });
+        setFavoritos(prev => prev.filter(id => id !== produto.id));
+        alert('Produto removido dos favoritos!');
+      } else {
+        await fetch('http://localhost:3001/favoritos', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId: email, produtoId: produto.id })
+        });
+        setFavoritos(prev => [...prev, produto.id]);
+        alert('Produto adicionado aos favoritos!');
+      }
+    } catch (err) {
+      console.error('Erro ao atualizar favoritos:', err);
     }
-
-    setCarrinho(novoCarrinho);
-    localStorage.setItem('carrinho', JSON.stringify(novoCarrinho));
-    alert('Produto adicionado ao carrinho!');
   };
 
   const isFavorito = produto && favoritos.includes(produto.id);
@@ -69,7 +101,7 @@ function ProductModal({ show, onHide, produto }) {
                 Adicionar ao carrinho
               </button>
               <button className="btnFav" onClick={handleFavoritar}>
-                {isFavorito ? 'Remover dos favoritos ♡' : 'Salvar como favorito ♡'}
+                {isFavorito ? 'Remover dos favoritos' : 'Salvar como favorito'}
               </button>
             </div>
           </div>

@@ -29,31 +29,48 @@ function NavBarShop({
   const [carrinho, setCarrinho] = useState([]);
   const [filtrarFavoritos, setFiltrarFavoritos] = useState(false);
 
+  const email = localStorage.getItem('usuarioEmail');
+
   const handleCloseFiltro = () => setShowModalFiltro(false);
   const handleShowFiltro = () => setShowModalFiltro(true);
   const handleShowCart = () => setShowCartModal(true);
   const handleCloseCart = () => setShowCartModal(false);
 
+ useEffect(() => {
+  let isMounted = true;
+  if (!email) return;
+
+  const fetchFavoritos = async () => {
+    try {
+      const res = await fetch(`http://localhost:3001/favoritos/${email}`);
+      const data = await res.json();
+      const ids = data.map(p => p.id);
+      if (isMounted) setFavoritos(ids);
+    } catch (err) {
+      console.error('Erro ao buscar favoritos:', err);
+    }
+  };
+
+  const fetchCarrinho = async () => {
+    try {
+      const res = await fetch(`http://localhost:3001/carrinho/${email}`);
+      const data = await res.json();
+      if (isMounted) setCarrinho(data);
+    } catch (err) {
+      console.error('Erro ao buscar carrinho:', err);
+    }
+  };
+
+  fetchFavoritos();
+  fetchCarrinho();
+
+  return () => {
+    isMounted = false; // Impede setState após desmontar
+  };
+}, [showCartModal, mostrarFavoritos, email]);
+
   useEffect(() => {
-    const atualizarEstado = () => {
-      const email = localStorage.getItem('usuarioEmail');
-      if (email) {
-        const favs = JSON.parse(localStorage.getItem(`favoritos_${email}`)) || [];
-        setFavoritos(favs);
-      }
-
-      const cart = JSON.parse(localStorage.getItem('carrinho')) || [];
-      setCarrinho(cart);
-    };
-
-    window.addEventListener('storage', atualizarEstado);
-    atualizarEstado();
-
-    return () => window.removeEventListener('storage', atualizarEstado);
-  }, []);
-
-  useEffect(() => {
-    aplicarFiltros(); // atualiza a cada mudança nos filtros ou favoritos
+    aplicarFiltros();
   }, [busca, categoria, precoMin, precoMax, filtrarFavoritos, favoritos]);
 
   const aplicarFiltros = () => {
@@ -104,31 +121,31 @@ function NavBarShop({
                 <span style={{ marginRight: '5px' }}>Filtro</span>
                 <img src={Filtro} className='ImgFltro' alt="Ícone de filtro" />
               </Nav.Link>
-              
+
               <Nav.Link
                 as="span"
-                onClick={() => setMostrarFavoritos(prev => !prev)}  // Alterna o filtro
+                onClick={() => setMostrarFavoritos(prev => !prev)}
                 style={{
-    position: 'relative',
-    filter: mostrarFavoritos ? 'grayscale(0%)' : 'grayscale(100%)', // Visualmente indica o filtro
-    cursor: 'pointer'
-  }}
-  aria-label="Favoritos"
->
-  <img src={Coracao} className='ImgCoracao' alt="Ícone de favoritos" />
-  {favoritos.length > 0 && (
-    <span style={{
-      position: 'absolute',
-      top: '0',
-      right: '0',
-      backgroundColor: '#3C594E',
-      color: 'white',
-      borderRadius: '50%',
-      padding: '2px 6px',
-      fontSize: '12px'
-    }}>{favoritos.length}</span>
-  )}
-</Nav.Link>
+                  position: 'relative',
+                  filter: mostrarFavoritos ? 'grayscale(0%)' : 'grayscale(100%)',
+                  cursor: 'pointer'
+                }}
+                aria-label="Favoritos"
+              >
+                <img src={Coracao} className='ImgCoracao' alt="Ícone de favoritos" />
+                {favoritos.length > 0 && (
+                  <span style={{
+                    position: 'absolute',
+                    top: '0',
+                    right: '0',
+                    backgroundColor: '#3C594E',
+                    color: 'white',
+                    borderRadius: '50%',
+                    padding: '2px 6px',
+                    fontSize: '12px'
+                  }}>{favoritos.length}</span>
+                )}
+              </Nav.Link>
 
               <Nav.Link
                 as="span"
